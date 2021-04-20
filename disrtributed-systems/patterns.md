@@ -2,7 +2,7 @@
 
 *Replicated Write Ahead Log*
 
-![image-20200928163746954](./distributed-systems-replicated-wal.png)
+![image-20200928163746954](./imgs/distributed-systems-replicated-wal.png)
 
 
 
@@ -16,7 +16,7 @@ Strong durability guarantee is needed even in the case of the server machines st
 
 ### Solution
 
-![image-20200928115147272](./write-ahead-log-solution.png)
+![image-20200928115147272](./imgs/write-ahead-log-solution.png)
 
 
 
@@ -222,15 +222,15 @@ When a server joins the cluster after crash/restart, there is always a possibili
 
 Consider the following example. The client sends requests to add four entries in the log. The leader successfully replicates three entries, but fails after adding entry4 to its own log. One of the followers is elected as a new leader and accepts more entries from the client. When the failed leader joins the cluster again, it has entry4 which is conflicting. So it needs to truncate its log till entry3, and then add entry5 to match the log with the rest of the cluster
 
-![image-20200928140258710](./high-water-mark-log-truncation.png)
+![image-20200928140258710](./imgs/high-water-mark-log-truncation.png)
 
 After the leader crash a new leader will be eligible
 
-![image-20200928140536998](./high-water-mark-new-leader.png)
+![image-20200928140536998](./imgs/high-water-mark-new-leader.png)
 
 And should be synchronized truncating the log
 
-![image-20200928140704051](./hig-water-mark-synch.png)
+![image-20200928140704051](./imgs/hig-water-mark-synch.png)
 
 Any server which restarts or rejoins the cluster after a pause, finds the new leader. It then explicitly asks for the current high-water mark, truncates its log to high-water mark, and then gets all the entries beyond high-water mark from the leader
 
@@ -300,7 +300,7 @@ Considering these two factors, most practical quorum-based systems have cluster 
 
 Here is an example of how to choose the number of servers, based on the number of tolerated failures and approximate impact on the throughput. The throughput column shows approximate relative throughput to highlight how throughput degrades with the number of servers. The number will vary from system to system. As an example, readers can refer to the actual throughput data published in [Raft Thesis](https://web.stanford.edu/~ouster/cgi-bin/papers/OngaroPhD.pdf) and the original [Zookeeper paper](https://www.usenix.org/legacy/event/atc10/tech/full_papers/Hunt.pdf).
 
-![image-20200929114356759](./quorum-table.png)
+![image-20200929114356759](./imgs/quorum-table.png)
 
 
 
@@ -322,13 +322,13 @@ Every server at start up looks for an existing leader. If no leader is found, it
 
 ### Leader Election
 
-![image-20200928141804636](./leader-followers-election.png)
+![image-20200928141804636](./imgs/leader-followers-election.png)
 
-![image-20200928142328242](./leader-followers-votes.png)
+![image-20200928142328242](./imgs/leader-followers-votes.png)
 
-![image-20200928142430208](./leader-followers-heartbeat.png)
+![image-20200928142430208](./imgs/leader-followers-heartbeat.png)
 
-For smaller clusters of three to five nodes, like in the systems which implement consensus, leader election can be implemented within the data cluster itself without dependending on any external system. Leader election happens at server start up.
+For smaller clusters of three to five nodes, like in the systems which implement consensus, leader election can be implemented within the data cluster itself without depending on any external system. Leader election happens at server start up.
 
 Every server starts a leader election at start up and tries to elect a leader. The system does not accept any client requests unless a leader is elected. As explained in the [Generation Clock](https://martinfowler.com/articles/patterns-of-distributed-systems/generation.html) pattern, every leader election also needs to update the generation number. The server can always be in one of the three states, Leader, Follower or Looking For Leader (or Candidate)
 
@@ -466,7 +466,7 @@ Every server in the cluster subscribes for this change, and whenever the callbac
   }
 ```
 
-![image-20200928153003183](./leader-follower-zookeeper.png)
+![image-20200928153003183](./imgs/leader-follower-zookeeper.png)
 
 ### Why Quorum read/writes are not enough for strong consistency guarantees
 
@@ -488,7 +488,7 @@ When multiple servers form a cluster, the servers are responsible for storing so
 
 ### Solution
 
-![image-20200928154304217](./heartbeat-solution.png)
+![image-20200928154304217](./imgs/heartbeat-solution.png)
 
 Periodically send a request to all the other servers indicating liveness of the sending server. Select the request interval to be more than the network round trip time between the servers. All the servers wait for the timeout interval, which is multiple of the request interval to check for the heartbeats. In general,
 
@@ -532,7 +532,7 @@ On the receiving server, the failure detection mechanism has a similar scheduler
   abstract void heartBeatReceived(T serverId);
 ```
 
-The failure detector needs to have two methods:ù
+The failure detector needs to have two methods:
 
 - A method to be called whenever the receiving server receives the heartbeat, to tell the failure detector that heartbeat is received 
  ```java
@@ -550,7 +550,7 @@ The failure detector needs to have two methods:ù
 
 - A method to periodically check the heartbeat status and detect possible failures.
 
-The implementation of when to mark a server as failed depends on various criterias. There are different trade offs. In general, the smaller the heartbeat interval, the quicker the failures are detected, but then there is higher probability of false failure detections. So the heartbeat intervals and interpretation of missing heartbeats is implemented as per the requirements of the cluster. In general there are following two broad categories.
+The implementation of when to mark a server as failed depends on various criteria. There are different trade offs. In general, the smaller the heartbeat interval, the quicker the failures are detected, but then there is higher probability of false failure detections. So the heartbeat intervals and interpretation of missing heartbeats is implemented as per the requirements of the cluster. In general there are following two broad categories.
 
 ### Small Clusters - e.g. Consensus Based Systems like RAFT, Zookeeper
 
@@ -676,11 +676,11 @@ private void stepDownIfHigherGenerationResponse(ReplicationResponse replicationR
 
 Consider the following example. In the three server cluster, leader1 is the existing leader. All the servers in the cluster have the generation as 1. Leader1 sends continuous heartbeats to the followers. Leader1 has a long garbage collection pause, for say 5 seconds. The followers did not get a heartbeat, and timeout to elect a new leader. The new leader increments the generation to 2. After the garbage collection pause is over, leader1 continues sending the requests to other servers. The followers and the new leader which are at generation 2, reject the request and send a failure response with generation 2. leader1 handles the failure response and steps down to be a follower, with generation updated to 2.
 
-![image-20200928163236233](./generation-clock-re-election.png)
+![image-20200928163236233](./imgs/generation-clock-re-election.png)
 
 
 
-![image-20200928163400751](./generation-clock-re-generation.png)
+![image-20200928163400751](./imgs/generation-clock-re-generation.png)
 
 ## Single Socket Channel
 
@@ -694,7 +694,7 @@ When we are using [Leader and Followers](https://martinfowler.com/articles/patte
 
 Fortunately, the long-used and widely available [TCP](https://en.wikipedia.org/wiki/Transmission_Control_Protocol) mechanism provides all these necessary characteristics. Thus we can get the communication we need by ensuring all communication between a follower and its leader goes through a single socket channel. The follower then serializes the updates from leader using a [Singular Update Queue](https://martinfowler.com/articles/patterns-of-distributed-systems/singular-update-queue.html)
 
-![image-20200928165103005](./single-socket-tcp.png)
+![image-20200928165103005](./imgs/single-socket-tcp.png)
 
 Nodes never close the connection once it is open and continuously read it for new requests. Nodes use a dedicated thread per connection to read and write requests. A thread per connection isn't needed if [non blocking io](https://en.wikipedia.org/wiki/Non-blocking_I/O_(Java)) is used.
 
@@ -773,7 +773,7 @@ When the state needs to be updated by multiple concurrent clients, we need it to
 
 Implement a workqueue and a single thread working off the queue. Multiple concurrent clients can submit state changes to the queue. But a single thread works on state changes. This can be naturally implemented with goroutines and channels in languages like golang.
 
-![image-20200929085931076](./single-update-queue-worker-thread.png)
+![image-20200929085931076](./imgs/single-update-queue-worker-thread.png)
 
 A SingularUpdateQueue has a queue and a function to be applied for work items in the queue. It extends from java.lang.Thread, to make sure that it has its own single thread of execution.
 
