@@ -2,7 +2,7 @@
 
 # Core Concepts
 
-All the kubernetes yaml declarative file contain this four section at the root of the document: 
+All the kubernetes yaml declarative file contain this four sections at the root of the document: 
 
 ```yaml
 apiVersion:
@@ -60,9 +60,9 @@ another reason to use replica controller is to create multiple Pod in order to s
 apiVersion: v1
 kind: ReplicationController
 metadata:
-	name: rc-name
-	label:
-	  app: myapp
+  name: rc-name
+  label:
+  app: myapp
 spec:
 - template:
     metadata:
@@ -83,9 +83,9 @@ replicas: 3
 apiVersion: app/v1
 kind: ReplicationSet
 metadata:
-	name: rs-name
-	label:
-	  app: myapp
+  name: rs-name
+  label:
+  app: myapp
 spec:
 - template:
     metadata:
@@ -131,9 +131,9 @@ Deployments is a kubernetes object that is on top of replicaset. It provide the 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-	name: deployment-name
-	labels:
-	  app: myapp
+  name: deployment-name
+  labels:
+  app: myapp
 spec:
   template:
     metadata:
@@ -1196,7 +1196,7 @@ NGINX is a perfect match for kubernetes and it is deployed as another deployment
 apiVersion: extnesions/v1beta1
 kind: Deployment
 metadata:
-	name: ingress-controller
+  name: ingress-controller
 spec:
   replicas: 1
   selector:
@@ -1239,7 +1239,7 @@ After that we have to create a service of type NodePort to expose the ingress co
 apiVersion: v1
 kind: Service
 metadata:
-	name: nginx-ingress
+  name: nginx-ingress
 spec:
   type: NodePort
   ports:
@@ -1285,7 +1285,7 @@ In this way all the traffic are routed to the path service. We can specify diffe
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-	name: ingress-path
+  name: ingress-path
 spec:
   rules:
   - http:
@@ -1310,7 +1310,7 @@ In case we want to route to a different service by the domain name we have to us
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-	name: ingress-path
+  name: ingress-path
 spec:
   rules:
   - host: wear.mysite.com
@@ -1342,7 +1342,7 @@ Network policies is another kubernetes object that allow you to specify which ki
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-	name: db-policy
+  name: db-policy
 spec:
 
   podSelector:
@@ -1382,7 +1382,7 @@ Take a look to this Pod that run a a command to generate a random file and store
 apiVersion: v1
 kind: Pod
 metadata:
-	name: my-pod
+  name: my-pod
 spec:
   containers:
   - image: alpine
@@ -1397,7 +1397,7 @@ to retain the generated number we have to create a volume for the Pod and Storag
 apiVersion: v1
 kind: Pod
 metadata:
-	name: my-pod
+  name: my-pod
 spec:
   containers:
   - image: alpine
@@ -1418,7 +1418,7 @@ Once the volume is created we have to mount it in a directory inside the contain
 apiVersion: v1
 kind: Pod
 metadata:
-	name: my-pod
+  name: my-pod
 spec:
   containers:
   - image: alpine
