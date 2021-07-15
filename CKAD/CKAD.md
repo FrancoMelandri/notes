@@ -1261,7 +1261,7 @@ At the end the ingress controller require a service account with the right role 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-	name: nginx-ingress-serviceaccount
+  name: nginx-ingress-serviceaccount
 ```
 
 ![image-20210316140748948](./assets/image-20210316140748948.png)
@@ -1272,7 +1272,7 @@ Next part is creating ingress resources where we define all the route to interna
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-	name: ingress-path
+  name: ingress-path
 spec:
   backend:
     serviceName: path-service
