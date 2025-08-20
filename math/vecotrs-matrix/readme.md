@@ -51,4 +51,10 @@ ed il risultato è un numero reale
 
 v*W = x1*x2 + y1*y2 = |v| |w| cos(alfa)
 
+dato che 
+
+v * v = x*x + y*y = x^2 + y^2 = |v|^2
+|V| = sqrt(v*v)
+
+con il prodotto scalare posso misurare le lunghezze e calcolare gli angoli tra vettori
 
